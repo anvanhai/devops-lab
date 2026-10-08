@@ -1,0 +1,33 @@
+---
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Cai Nginx
+  ansible.builtin.apt:
+    name: nginx
+    state: present
+
+- name: Tao thu muc web root
+  ansible.builtin.file:
+    path: "{{ web_root }}"
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: "0755"
+
+- name: Deploy website
+  ansible.builtin.template:
+    src: index.html.j2
+    dest: "{{ web_root }}/index.html"
+    owner: www-data
+    group: www-data
+    mode: "0644"
+  notify: Restart Nginx
+
+- name: Khoi dong Nginx va bat khi reboot
+  ansible.builtin.service:
+    name: nginx
+    state: started
+    enabled: true

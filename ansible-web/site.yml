@@ -1,0 +1,6 @@
+---
+- name: Cau hinh Web Server
+  hosts: webservers
+  become: true
+  roles:
+    - web
